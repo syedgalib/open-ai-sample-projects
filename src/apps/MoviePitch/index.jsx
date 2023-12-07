@@ -41,6 +41,7 @@ export default function App() {
 
         try {
             await fetchBodyReplay(userInput);
+            await wait( 5 );
             await fetchSynopsis(userInput);
             setIsLoading(false);
         } catch (error) {
@@ -114,7 +115,7 @@ export default function App() {
         const synopsis = response.choices[0].text.trim();
         const title = await fetchTitle(synopsis);
 
-        await wait( 5 );
+        await wait( 15 );
 
         const stars = await fetchStars(synopsis);
 
