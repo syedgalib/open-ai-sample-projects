@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+	  "baseUrl": ".",
+	  "paths": {
+		"@root/*": ["./*"],
+		"@app/*": ["./src/apps/*"],
+		"@assets/*": ["./src/assets/*"],
+		"@scss/*": ["./src/scss/*"],
+	  }
+	},
+	"exclude": [".git", "node_modules"]
+  }
+  
