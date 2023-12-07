@@ -75,7 +75,7 @@ export default function App() {
         outline: ${outline}
         message: `;
 
-        const message = await fetchCompletions( { prompt, max_tokens: 60 }, 'fetchBodyReplay' );;
+        const message = await fetchCompletions( { prompt, max_tokens: 60 }, 'fetchBodyReplay' );
         setMessage(message);
     }
 
