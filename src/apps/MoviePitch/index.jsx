@@ -75,19 +75,8 @@ export default function App() {
         outline: ${outline}
         message: `;
 
-        const response = await openai.completions.create({
-            model: "gpt-3.5-turbo-instruct",
-            prompt,
-            max_tokens: 60,
-            // temperature: 1,
-            // top_p: 1,
-            // frequency_penalty: 0,
-            // presence_penalty: 0,
-        });
-
-        console.log('fetchBodyReplay', { response });
-
-        setMessage(response.choices[0].text.trim());
+        const message = await fetchCompletions( { prompt, max_tokens: 60 }, 'fetchBodyReplay' );;
+        setMessage(message);
     }
 
     // Fetch Synopsis
@@ -104,15 +93,7 @@ export default function App() {
       
         `;
 
-        const response = await openai.completions.create({
-            model: "gpt-3.5-turbo-instruct",
-            prompt,
-            max_tokens: 700,
-        });
-
-        console.log('fetchSynopsis', { response });
-
-        const synopsis = response.choices[0].text.trim();
+        const synopsis = await fetchCompletions( { prompt, max_tokens: 700 }, 'fetchSynopsis' );
         const title = await fetchTitle(synopsis);
 
         await wait( 15 );
@@ -129,18 +110,13 @@ export default function App() {
 
     // Fetch Title
     async function fetchTitle(synopsis) {
-        const prompt = `Generate a catchy movie title for this synopsis: ${synopsis}`;
-
-        const response = await openai.completions.create({
-            model: "gpt-3.5-turbo-instruct",
-            prompt,
+        const config = {
+            prompt: `Generate a catchy movie title for this synopsis: ${synopsis}`, 
             max_tokens: 25,
             temperature: 0.7,
-        });
+        };
 
-        console.log('fetchTitle', { response });
-
-        return response.choices[0].text.trim();
+        return await fetchCompletions( config, 'fetchTitle' );
     }
 
     // Fetch Stars
@@ -154,13 +130,19 @@ export default function App() {
         names: 
         `;
 
+        return await fetchCompletions( { prompt, max_tokens: 30 }, 'fetchStars' );
+    }
+
+    async function fetchCompletions( config, key ) {
         const response = await openai.completions.create({
             model: "gpt-3.5-turbo-instruct",
-            prompt,
-            max_tokens: 30,
+            max_tokens: 60,
+            ...config,
         });
 
-        console.log('fetchStars', { response });
+        if ( key ) {
+            console.log( key, { response });
+        }
 
         return response.choices[0].text.trim();
     }
