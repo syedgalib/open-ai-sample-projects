@@ -1,1 +1,1 @@
-# Open AI Projects
+# Open AI Sample Projects
