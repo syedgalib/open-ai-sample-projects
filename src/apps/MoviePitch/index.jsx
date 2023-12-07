@@ -32,6 +32,10 @@ export default function App() {
 
     // Prepare Result
     async function prepareResult() {
+        if ( isLoading ) {
+            return;
+        }
+
         reset();
         setIsLoading(true);
 
