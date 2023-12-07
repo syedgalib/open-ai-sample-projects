@@ -40,10 +40,10 @@ export default function App() {
 
     async function generateImage( prompt ) {
         const response = await openai.images.generate({
-            model: "dall-e-3",
+            model: "dall-e-2",
             prompt,
             n: 1,
-            // size: '256x256',
+            size: '256x256',
             response_format: 'b64_json'
           });
         
@@ -81,7 +81,7 @@ export default function App() {
                         <textarea 
                             value={userInput} 
                             onChange={e => setUserInput( e.target.value )} 
-                            placeholder="A woman with long brown hair..." 
+                            placeholder="A beautiful mosque with white dome..." 
                             id="instruction"
                         >
                         </textarea>
