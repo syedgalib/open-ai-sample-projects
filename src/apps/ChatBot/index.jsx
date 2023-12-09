@@ -83,6 +83,7 @@ export default function App() {
     async function fetchChatCompletion(config, key) {
         const response = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
+            presence_penalty: 0,
             ...config,
         });
 
