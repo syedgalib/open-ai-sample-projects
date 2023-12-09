@@ -103,10 +103,18 @@ main {
     display: flex;
 }
 
+.loading {
+    height: 40px;
+}
+
+.text-center {
+    text-align: center;
+}
+
 input[type="text"], button{
     background-color: transparent;
     border: 1px solid var(--medium-light-text);
-    border-radius: 15px;
+    border-radius: 10px;
     padding: 1em;
 }
 
@@ -118,19 +126,33 @@ input[type="text"] {
     border-bottom-right-radius: 0;
 }
 
-button {
+.submit-btn {
     border-left: 0; 
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
+
 
 .send-btn-icon {
     width: 20px;
     display: block;
 }
 
-/* text */
+.btn {
+    display: inline-block;
+    color: #16202C;
+    background-color: #fcfcfc;
+}
 
+.center-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* text */
 h1 {
     font-size: 15px;
     color: var(--light-text);
@@ -149,7 +171,6 @@ h2 {
 }
 
 /* The cursor */
-
 @keyframes cursor-blink {
   0% {
     opacity: 0;
