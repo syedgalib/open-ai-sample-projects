@@ -1,7 +1,9 @@
 import './App.scss';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import OpenAI from "openai";
+import { initializeApp } from 'firebase/app';
+import { getDatabase, ref, push, get } from 'firebase/database'
 
 import { process } from '@root/env';
 
@@ -17,19 +19,42 @@ export default function App() {
         dangerouslyAllowBrowser: true,
     });
 
+    const chatBootInstruction = {
+        role: 'system',
+        content: 'You are a highly knowledgeable assistant that is always happy to help.'
+    };
+
+    const app = initializeApp(process.env.CHAT_BOOT_DATABASE_CONFIG);
+    const database = getDatabase(app);
+    const conversationInDb = ref(database);
+
     const [userInput, setUserInput] = useState('');
-    const [messages, setMessages] = useState([
-        {
-            role: 'system',
-            content: 'You are a highly knowledgeable assistant that is always happy to help.'
-        },
-    ]);
+    const [messages, setMessages] = useState([]);
 
     const [hasError, setHasError] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+    useEffect(() => {
+        loadOldData();
+    }, []);
+
+    function loadOldData() {
+        setIsLoading(true);
+
+        get(conversationInDb).then(async (snapshot) => {
+            if (snapshot.exists()) {
+                const newMessages = Object.values(snapshot.val());
+                setMessages( newMessages );
+            }
+            setIsLoading(false);
+        });
+    }
+
+
     // Submit Input
-    function submitInput() {
+    async function submitInput(e) {
+        e.preventDefault();
+
         if (!userInput) {
             return;
         }
@@ -38,29 +63,44 @@ export default function App() {
             return;
         }
 
-        const newMessages = [
-            ...messages,
-            {
-                role: 'user',
-                content: userInput
-            },
-        ];
+        const newMessage = {
+            role: 'user',
+            content: userInput
+        };
 
-        setMessages( newMessages );
-        setUserInput( '' );
-        prepareResult( newMessages );
+        const newMessages = [...messages, newMessage];
+
+        setUserInput('');
+        setMessages(newMessages);
+        await push(conversationInDb, newMessage);
+        updateResult();
     }
 
-    // Prepare Result
-    async function prepareResult( messages ) {
+    // Update Result
+    function updateResult() {
         if (isLoading) {
             return;
         }
 
         setIsLoading(true);
 
+        get(conversationInDb).then(async (snapshot) => {
+            if (snapshot.exists()) {
+                const newMessages = Object.values(snapshot.val());
+                await prepareResult(newMessages);
+            }
+            else {
+                console.log('No data available')
+            }
+        });
+    }
+
+    // Prepare Result
+    async function prepareResult(messages) {
+        setIsLoading(true);
+
         try {
-            await fetchReplay( messages );
+            await fetchReplay(messages);
             setIsLoading(false);
         } catch (error) {
             console.log({ error });
@@ -71,9 +111,11 @@ export default function App() {
     }
 
     // Fetch Replay
-    async function fetchReplay( messages ) {
-        const message = await fetchChatCompletion({ messages }, 'fetchBodyReplay');
+    async function fetchReplay(messages) {
+        messages.unshift(chatBootInstruction);
+        const message = await fetchChatCompletion({ messages }, 'fetchReplay');
 
+        push(conversationInDb, message);
         setMessages(currentValue => ([
             ...currentValue,
             message,
@@ -95,14 +137,12 @@ export default function App() {
     }
 
     function getMessages() {
-        const messageList = structuredClone(messages);
-        messageList.shift();
-        return messageList;
+        return messages;
     }
 
     function tryAgain() {
         setHasError(false);
-        prepareResult( messages );
+        updateResult();
     }
 
     return (
@@ -113,6 +153,7 @@ export default function App() {
                     <h1>KnowItAll</h1>
                     <h2>Ask me anything!</h2>
                     <p className="supportId">User ID: 2344</p>
+                    <button type='button' className="clear-btn" id="clear-btn">Start Over</button>
                 </div>
 
                 <div className="chatbot-conversation-container" id="chatbot-conversation">
@@ -140,7 +181,7 @@ export default function App() {
                 {
                     (!hasError && !isLoading) && (
                         <form id="form" className="chatbot-input-container" onSubmit={submitInput}>
-                            <input type="text" value={userInput} required onChange={(e) => setUserInput( e.target.value )} />
+                            <input type="text" value={userInput} required onChange={(e) => setUserInput(e.target.value)} />
                             <button type='submit' id="submit-btn" className="submit-btn">
                                 <img
                                     src={sendBtnIcon}
