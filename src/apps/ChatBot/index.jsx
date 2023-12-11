@@ -1,6 +1,6 @@
 import './App.scss';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import OpenAI from "openai";
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, push, get } from 'firebase/database'
@@ -28,6 +28,8 @@ export default function App() {
     const database = getDatabase(app);
     const conversationInDb = ref(database);
 
+    const conversationContainerRef = useRef();
+
     const [userInput, setUserInput] = useState('');
     const [messages, setMessages] = useState([]);
 
@@ -45,6 +47,7 @@ export default function App() {
             if (snapshot.exists()) {
                 const newMessages = Object.values(snapshot.val());
                 setMessages( newMessages );
+                conversationContainerRef.current.scrollTop = conversationContainerRef.current.scrollHeight;
             }
             setIsLoading(false);
         });
@@ -156,7 +159,7 @@ export default function App() {
                     <button type='button' className="clear-btn" id="clear-btn">Start Over</button>
                 </div>
 
-                <div className="chatbot-conversation-container" id="chatbot-conversation">
+                <div ref={conversationContainerRef} className="chatbot-conversation-container">
                     <div className="speech speech-ai">
                         How can I help you?
                     </div>
