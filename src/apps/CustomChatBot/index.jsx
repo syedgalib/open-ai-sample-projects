@@ -8,7 +8,7 @@ import { getDatabase, ref, push, get, remove } from 'firebase/database'
 import { process } from '@root/env';
 
 import loading from '@assets/images/loading-white.svg';
-import owlLogo from '@assets/images/owl-logo.png';
+import droneLogo from '@assets/images/drone-logo.png';
 import sendBtnIcon from '@assets/images/send-btn-icon.png';
 
 export default function App() {
@@ -24,7 +24,7 @@ export default function App() {
         content: 'You are a highly knowledgeable assistant that is always happy to help.'
     };
 
-    const app = initializeApp(process.env.GENERAL_CHAT_BOOT_DATABASE_CONFIG);
+    const app = initializeApp(process.env.CUSTOM_CHAT_BOOT_DATABASE_CONFIG);
     const database = getDatabase(app);
     const conversationInDb = ref(database);
 
@@ -177,10 +177,10 @@ export default function App() {
         <main>
             <section className="chatbot-container">
                 <div className="chatbot-header">
-                    <img src={owlLogo} className="logo" />
-                    <h1>KnowItAll</h1>
-                    <h2>Ask me anything!</h2>
-                    <p className="supportId">User ID: 2344</p>
+                    <img src={droneLogo} className="logo" />
+                    <h1>We-Wingit Drones</h1>
+                    <h2>Delivery Support Chat</h2>
+                    <p className="supportId">ID: W88</p>
                     <button type='button' className="clear-btn" id="clear-btn" onClick={startOver}>
                         Start Over
                     </button>
