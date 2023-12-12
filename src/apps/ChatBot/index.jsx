@@ -3,7 +3,7 @@ import './App.scss';
 import { useState, useEffect, useRef } from 'react';
 import OpenAI from "openai";
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, push, get } from 'firebase/database'
+import { getDatabase, ref, push, get, remove } from 'firebase/database'
 
 import { process } from '@root/env';
 
@@ -147,6 +147,32 @@ export default function App() {
         updateResult();
     }
 
+    async function startOver() {
+        if ( isLoading ) {
+            return;
+        }
+
+        const confirmed = confirm( 'Are You Sure?' );
+
+        if ( ! confirmed ) {
+            return;
+        }
+
+        try {
+            setIsLoading( true );
+
+            await remove( conversationInDb );
+            
+            setUserInput('');
+            setMessages([]);
+            setHasError(false);
+            setIsLoading( false );
+        } catch (error) {
+            console.log( { error } );
+            setIsLoading( false );
+        }
+    }
+
     return (
         <main>
             <section className="chatbot-container">
@@ -155,7 +181,9 @@ export default function App() {
                     <h1>KnowItAll</h1>
                     <h2>Ask me anything!</h2>
                     <p className="supportId">User ID: 2344</p>
-                    <button type='button' className="clear-btn" id="clear-btn">Start Over</button>
+                    <button type='button' className="clear-btn" id="clear-btn" onClick={startOver}>
+                        Start Over
+                    </button>
                 </div>
 
                 <div ref={conversationContainerRef} className="chatbot-conversation-container">
