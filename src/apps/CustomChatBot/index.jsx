@@ -188,7 +188,7 @@ export default function App() {
 
                 <div ref={conversationContainerRef} className="chatbot-conversation-container">
                     <div className="speech speech-ai">
-                        How can I help you?
+                        How can I help you with your We-Wingit drone delivery?
                     </div>
 
                     {
