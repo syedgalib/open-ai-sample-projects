@@ -53,7 +53,6 @@ export default function App() {
         });
     }
 
-
     // Submit Input
     async function submitInput(e) {
         e.preventDefault();
