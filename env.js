@@ -1,6 +1,6 @@
 export const process = {
     env: {
-        OPENAI_API_KEY: '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',
+        OPENAI_API_KEY: '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',
         GENERAL_CHAT_BOOT_DATABASE_CONFIG: { 
             databaseURL: 'https://open-ai-sample-chatboot-default-rtdb.firebaseio.com/'
         },
