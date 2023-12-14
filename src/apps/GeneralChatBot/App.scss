@@ -15,23 +15,27 @@ html, body {
 }
 
 main {    
-    background-color: slategrey;
-    height: 100vh;
     display: flex;
-    align-items: center;
+    align-items: start;
     justify-content: center;
+    padding: 20px;
+    height: 100vh;
+    background-color: slategrey;
+    overflow-y: auto;
 }
 
 /* chatbot elements */
 
 .chatbot-container {
     background-color: #16202C;
-    width: 360px;
+    width: 600px;
+    height: 100%;
     min-height: 380px;
     border-radius: var(--border-rad-lg);
     display: flex;
     flex-direction: column;
-    padding: 1em;  
+    padding: 1em;
+    max-width: 100%;
 }
 
 .chatbot-container > * {
@@ -61,8 +65,7 @@ main {
 }
 
 .chatbot-conversation-container {
-    max-height: 250px;
-    min-height: 250px;
+    flex-grow: 1;
     overflow-y: scroll;
     margin: 1em 0;
 }
@@ -156,8 +159,6 @@ input[type="text"] {
 .clear-btn {
     grid-area: clear-btn;
     height: 20px;
-    padding: 0;
-    width: 80%;
     color: var(--medium-light-text);
     font-size: 12px;
     margin: 0 auto; 
